@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+
+        .container {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1, h2, h3 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .selection-container {
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .selection-container.active {
+            display: block;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .option-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: #fff;
+            color: #ff6b6b;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            position: relative;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #result {
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            display: none;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hearts-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container"></div>
+    <div class="container">
+        <h2>Undangan Valentine Day with Ayanggg❤️</h2>
+        <h3>Tempat utama yang harus ayang pilih!</h3>
+        
+        <div id="step1" class="selection-container active">
+            <h2>Kemana Kita?</h2>
+            <div class="button-container">
+                <button class="option-btn" onclick="handleSelection(this, 1, 'Byebeli')">Byebeli</button>
+                <button class="option-btn" onclick="handleSelection(this, 1, 'Karaoke')">Karaoke</button>
+                <button class="option-btn" onclick="handleSelection(this, 1, 'Gondola')">Gondola</button>
+            </div>
+        </div>
+
+        <div id="step2" class="selection-container">
+            <h2>Makan dimana?</h2>
+            <div class="button-container">
+                <button class="option-btn" onclick="handleSelection(this, 2, 'Bandar')">Bandar</button>
+                <button class="option-btn" onclick="handleSelection(this, 2, 'Sutei')">Sutei</button>
+                <button class="option-btn" onclick="handleSelection(this, 2, 'Sushi Hiro')">Sushi Hiro</button>
+            </div>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <iframe id="soundcloud-player" 
+        width="1" 
+        height="1" 
+        scrolling="no" 
+        frameborder="no" 
+        allow="autoplay" 
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1968840759&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
+    </iframe>
+
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <script>
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.className = 'heart';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = Math.random() * 100 + 'vh';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.opacity = Math.random() * 0.5+0.5;
+            document.querySelector('.hearts-container').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        setInterval(createHeart, 50);
+
+        let step = 1;
+        const desiredChoices = {
+            1: 'Gondola',
+            2: 'Bandar'
+        };
+
+        function handleSelection(button, currentStep, choice) {
+            if (choice === desiredChoices[currentStep]) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                if (currentStep < 2) {
+                    document.getElementById(`step${currentStep + 1}`).classList.add('active');
+                    step++;
+                } else {
+                    showFinalResult();
+                }
+            } else {
+                const container = document.querySelector('.container');
+                const maxX = container.clientWidth - button.clientWidth;
+                const maxY = container.clientHeight - button.clientHeight;
+                const randomX = Math.random() * maxX;
+                const randomY = Math.random() * maxY;
+
+                button.style.position = 'absolute';
+                button.style.left = randomX + 'px';
+                button.style.top = randomY + 'px';
+            }
+        }
+
+        function showFinalResult() {
+            const resultDiv = document.querySelector('.container');
+            resultDiv.innerHTML = `
+                <h2>Pilihan Sempurna Ayang! ❤️</h2>
+                <p>Aku nggak sabar Valentine Day sama ayanggg mwehehehe!</p>
+                <p>Seru-seruan di <span style="color: #000;"><strong>${desiredChoices[1]}</strong></span></p>
+                <p>Setelah itu makan enak di <span style="color: #000;"><strong>${desiredChoices[2]}</strong></span></p>
+                <p>Gak cabal gak cabal gak cabal! ❤️❤️❤️</p>
+            `;
+        }
+    </script>
+</body>
+</html>
